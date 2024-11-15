@@ -1,0 +1,123 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Fri, 24 Jul 2020 10:55:56 +0100
+Subject: build: Link game, cgame, ui modules to $(LIBS)
+
+All three modules call mathematical functions like atan2(). On glibc
+systems, when compiled to native code with an ordinary C compiler
+(as opposed to bytecode from q3lcc), they get the definition of those
+functions from libm.
+
+Until now, they were not explicitly linked to libm, and instead relied
+on the fact that libm is linked into the main executable. However,
+doing it this way defeats glibc's symbol-versioning mechanisms, and
+can fail in some situations, in particular binaries built with
+-ffast-math on a pre-2.31 version of glibc (where atan2() resolves to
+__atan2_finite()), and used without recompilation on a post-2.31 version
+of glibc (where __atan2_finite() has become a deprecated hidden symbol
+that is only available as a versioned symbol).
+
+When building shared libraries and loadable modules, it's most robust
+to link them explicitly to their dependencies, as is done here.
+$(LIBS) also includes -ldl, which is unnecessary but harmless.
+
+Bug-Debian: https://bugs.debian.org/966150
+Bug-Debian: https://bugs.debian.org/966173
+Forwarded: https://github.com/iortcw/iortcw/pull/112
+Applied-upstream: 1.51d, commit:9601361
+---
+ MP/Makefile | 12 ++++++------
+ SP/Makefile | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/MP/Makefile b/MP/Makefile
+index 5447e44..0f1f7eb 100644
+--- a/MP/Makefile
++++ b/MP/Makefile
+@@ -2405,11 +2405,11 @@ Q3CGVMOBJ = $(Q3CGOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/cgame_mp_$(SHLIBNAME): $(Q3CGOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/cgame.mp.$(SHLIBNAME): $(Q3CGOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/cgame.mp.qvm: $(Q3CGVMOBJ) $(CGDIR)/cg_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"
+@@ -2480,11 +2480,11 @@ Q3GVMOBJ = $(Q3GOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/qagame_mp_$(SHLIBNAME): $(Q3GOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/qagame.mp.$(SHLIBNAME): $(Q3GOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/qagame.mp.qvm: $(Q3GVMOBJ) $(GDIR)/g_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"
+@@ -2514,11 +2514,11 @@ Q3UIVMOBJ = $(Q3UIOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/ui_mp_$(SHLIBNAME): $(Q3UIOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/ui.mp.$(SHLIBNAME): $(Q3UIOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/ui.mp.qvm: $(Q3UIVMOBJ) $(UIDIR)/ui_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"
+diff --git a/SP/Makefile b/SP/Makefile
+index 667aeeb..9ca1d62 100644
+--- a/SP/Makefile
++++ b/SP/Makefile
+@@ -2371,11 +2371,11 @@ Q3CGVMOBJ = $(Q3CGOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/cgame_sp_$(SHLIBNAME): $(Q3CGOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/cgame.sp.$(SHLIBNAME): $(Q3CGOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/cgame.sp.qvm: $(Q3CGVMOBJ) $(CGDIR)/cg_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"
+@@ -2446,11 +2446,11 @@ Q3GVMOBJ = $(Q3GOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/qagame_sp_$(SHLIBNAME): $(Q3GOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/qagame.sp.$(SHLIBNAME): $(Q3GOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/qagame.sp.qvm: $(Q3GVMOBJ) $(GDIR)/g_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"
+@@ -2480,11 +2480,11 @@ Q3UIVMOBJ = $(Q3UIOBJ_:%.o=%.asm)
+ ifdef MINGW
+ $(B)/$(BASEGAME)/ui_sp_$(SHLIBNAME): $(Q3UIOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ) $(LIBS)
+ else
+ $(B)/$(BASEGAME)/ui.sp.$(SHLIBNAME): $(Q3UIOBJ)
+ 	$(echo_cmd) "LD $@"
+-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
++	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ) $(LIBS)
+ endif
+ $(B)/$(BASEGAME)/vm/ui.sp.qvm: $(Q3UIVMOBJ) $(UIDIR)/ui_syscalls.asm $(Q3ASM)
+ 	$(echo_cmd) "Q3ASM $@"

@@ -1,0 +1,5 @@
+All-Rend2-Stub-out-USE_BOX_CUBEMAP_PARALLAX-on-GLSL-1.30.patch
+build-Link-game-cgame-ui-modules-to-LIBS.patch
+debian/Disable-client-side-auto-download-by-default.patch
+debian/File-access-methods-prevent-overwriting-DLLs-CVE-201.patch
+debian/Remove-support-for-downloading-executable-updates.patch

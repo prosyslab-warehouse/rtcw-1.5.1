@@ -1,0 +1,15 @@
+debian/*.svg                           usr/share/icons/hicolor/scalable/apps
+debian/32/*.png                        usr/share/icons/hicolor/32x32/apps
+debian/48/*.png                        usr/share/icons/hicolor/48x48/apps
+debian/apparmor.d/usr.lib.rtcw         etc/apparmor.d
+debian/need-data.sh                    usr/lib/rtcw
+debian/wolfmp.desktop                  usr/share/applications
+debian/wolfsp.desktop                  usr/share/applications
+usr/games/wolfmp
+usr/games/wolfsp
+usr/lib/rtcw/iowolfmp
+usr/lib/rtcw/iowolfmp.*
+usr/lib/rtcw/iowolfsp
+usr/lib/rtcw/iowolfsp.*
+usr/lib/rtcw/main/*.sp.*.so
+usr/lib/rtcw/renderer*.so

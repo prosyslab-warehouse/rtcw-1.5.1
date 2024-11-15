@@ -1,0 +1,38 @@
+From: MAN-AT-ARMS <M4N4T4RMS@gmail.com>
+Date: Sun, 17 Mar 2019 06:51:43 -0400
+Subject: All: Rend2: Stub out USE_BOX_CUBEMAP_PARALLAX on GLSL < 1.30
+
+Part of r_cubemapping patch by smcv
+
+Origin: upstream, 1.51d, commit:4bbfab9fd0e3fa359571ad6a40e9790e2d013fa6
+---
+ MP/code/rend2/glsl/lightall_fp.glsl | 2 +-
+ SP/code/rend2/glsl/lightall_fp.glsl | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MP/code/rend2/glsl/lightall_fp.glsl b/MP/code/rend2/glsl/lightall_fp.glsl
+index 443aff1..73b92ac 100644
+--- a/MP/code/rend2/glsl/lightall_fp.glsl
++++ b/MP/code/rend2/glsl/lightall_fp.glsl
+@@ -441,7 +441,7 @@ void main()
+ 	// from http://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/
+ 	vec3 parallax = u_CubeMapInfo.xyz + u_CubeMapInfo.w * viewDir;
+ 
+-  #if defined(USE_BOX_CUBEMAP_PARALLAX)
++  #if defined(USE_BOX_CUBEMAP_PARALLAX) && __VERSION__ >= 130
+ 	vec3 cubeLightColor = hitCube(R * u_CubeMapInfo.w, parallax, u_CubeMapInfo.www, ROUGHNESS_MIPS * roughness, u_CubeMap).rgb * u_EnableTextures.w;
+   #else
+ 	vec3 cubeLightColor = textureCubeLod(u_CubeMap, R + parallax, ROUGHNESS_MIPS * roughness).rgb * u_EnableTextures.w;
+diff --git a/SP/code/rend2/glsl/lightall_fp.glsl b/SP/code/rend2/glsl/lightall_fp.glsl
+index 443aff1..73b92ac 100644
+--- a/SP/code/rend2/glsl/lightall_fp.glsl
++++ b/SP/code/rend2/glsl/lightall_fp.glsl
+@@ -441,7 +441,7 @@ void main()
+ 	// from http://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/
+ 	vec3 parallax = u_CubeMapInfo.xyz + u_CubeMapInfo.w * viewDir;
+ 
+-  #if defined(USE_BOX_CUBEMAP_PARALLAX)
++  #if defined(USE_BOX_CUBEMAP_PARALLAX) && __VERSION__ >= 130
+ 	vec3 cubeLightColor = hitCube(R * u_CubeMapInfo.w, parallax, u_CubeMapInfo.www, ROUGHNESS_MIPS * roughness, u_CubeMap).rgb * u_EnableTextures.w;
+   #else
+ 	vec3 cubeLightColor = textureCubeLod(u_CubeMap, R + parallax, ROUGHNESS_MIPS * roughness).rgb * u_EnableTextures.w;

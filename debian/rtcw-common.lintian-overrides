@@ -1,0 +1,4 @@
+# /usr/lib is the conventional place to put a non-FHS tree that uses
+# symlinks to pull in architecture-independent files from /usr/share
+# or configuration from /etc (#971707)
+breakout-link usr/lib/rtcw/main/* -> usr/share/games/rtcw/main/*

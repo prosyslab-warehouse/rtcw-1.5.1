@@ -1,0 +1,2 @@
+debian/README.rtcw-data                usr/lib/rtcw
+usr/lib/rtcw/main/*.mp.*.so

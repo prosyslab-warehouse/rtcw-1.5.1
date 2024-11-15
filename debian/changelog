@@ -1,0 +1,273 @@
+iortcw (1.51.c+dfsg1-3) unstable; urgency=medium
+
+  * Update AppArmor profiles to use abstractions from 2.13.x.
+    A suitable version is available in Debian 10 and Ubuntu 19.10.
+  * Explicitly link game, cgame, ui modules to libm.
+    This is the equivalent of #966150, but for RTCW.
+  * Link with -Wl,-z,defs to enforce that all modules are self-contained
+  * Mark patch for #966150 as applied upstream
+  * Standards-Version: 4.5.1 (no changes required)
+  * d/gbp.conf: Use debian/latest branch for packaging
+  * d/copyright: Remove a duplicate line
+  * Add Lintian overrides for overzealous breakout-link tag (#971707)
+  * Remove unused Lintian override
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 22 Dec 2020 20:56:20 +0000
+
+iortcw (1.51.c+dfsg1-2) unstable; urgency=medium
+
+  * Upload to unstable
+  * d/salsa-ci.yml: Request standard CI on salsa.debian.org
+  * d/rules: Set LC_ALL=C.UTF-8 and TZ=UTC.
+    This affects the build date derived from SOURCE_DATE_EPOCH,
+    which should be the same for all builds to improve reproducibility.
+  * d/rules: Use dh_auto_build for the build step.
+    In particular this results in setting the right CC, CXX and PKG_CONFIG
+    when cross-compiling.
+  * Explicitly set COMPILE_ARCH, COMPILE_PLATFORM as well as ARCH and
+    PLATFORM.
+    Otherwise the build system will think we're cross-compiling on any
+    non-special-cased architecture where uname -m doesn't match the CPU
+    part of the GNU tuple (or when reprotest builds under linux32 on
+    amd64), which in recent versions causes the upstream build system
+    to reject pkg-config.
+  * Explicitly set PKG_CONFIG, even when not cross-compiling
+  * d/rules: Remove migration path from rtcw-dbg, which was not in
+    stretch or buster
+  * Standards-Version: 4.4.0 (no changes required)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 09 Jul 2019 20:17:09 +0100
+
+iortcw (1.51.c+dfsg1-1) experimental; urgency=medium
+
+  * New upstream release
+    - Increase minimum build-dependencies to match the versions bundled
+      by upstream (except libogg, #894158)
+    - Refresh patches
+    - d/copyright: Update
+  * AppArmor: Allow Mesa 18 shader cache
+  * AppArmor: Mark the parts that can be simplified with a dependency
+    on apparmor (>= 2.13). Don't depend on that version yet for easier
+    backporting.
+  * AppArmor: Rename AppArmor profiles to decouple the name from the
+    attachment, as per
+    https://lists.ubuntu.com/archives/apparmor/2018-August/011791.html
+  * d/p/All-Rend2-Stub-out-USE_BOX_CUBEMAP_PARALLAX-on-GLSL-1.30.patch:
+    Apply post-release patch from upstream to complete fix for the
+    equivalent of #923226
+  * d/rules: Remove get-orig-source target
+  * d/watch: Set repacksuffix to +dfsg1
+  * Declare compliance with Debian Policy 4.3.0
+  * Move to debhelper-compat (= 12)
+    - Add ${misc:Pre-Depends} to all packages (only strictly necessary
+      for rtcw-server)
+  * d/copyright: Mention that this package is not part of Debian
+    (Policy §12.5)
+  * d/rtcw-common.lintian-overrides: Justify why
+    /usr/lib/rtcw/README.rtcw-data can't be in /usr/share/doc
+  * Symlink README.rtcw-data into rtcw, rtcw-server packages' doc
+    directories
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 17 Mar 2019 17:09:15 +0000
+
+iortcw (1.51.b+dfsg1-3) unstable; urgency=medium
+
+  * Declare compliance with Debian Policy 4.1.3
+  * Replace kde-baseapps-bin dependency with kdialog (see #885839)
+  * AppArmor: Use <abstractions/wayland> from apparmor (>= 2.10.95-5)
+    instead of reinventing it
+  * AppArmor: Allow reading EGL vendor configuration
+  * AppArmor: Allow zenity to read from dconf
+  * Move packaging to salsa.debian.org
+  * AppArmor: Remove rules for OpenAL static data files, which are now
+    allowed by <abstractions/audio> (#874665 in apparmor)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 15 Jan 2018 09:26:05 +0000
+
+iortcw (1.51.b+dfsg1-2) unstable; urgency=medium
+
+  * Declare compliance with Debian Policy 4.1.1
+  * Set Rules-Requires-Root to no
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 06 Nov 2017 10:19:01 +0000
+
+iortcw (1.51.b+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release
+    - Drop patch from previous version, now upstream
+  * Declare compliance with Debian Policy 4.1.0
+  * d/watch: Mangle version number so the trailing "b" is not considered
+    to be less than +dfsg
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 08 Sep 2017 11:18:04 +0100
+
+iortcw (1.51+dfsg1-3) unstable; urgency=medium
+
+  * d/p/1.52/All-Fix-improve-buffer-overflow-in-MSG_ReadBits-MSG_Write.patch:
+    Add patch (from ioquake3 via upstream) to fix a read buffer overflow
+    in MSG_ReadBits (CVE-2017-11721)
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 05 Aug 2017 11:56:31 +0100
+
+iortcw (1.51+dfsg1-2) unstable; urgency=medium
+
+  * d/copyright, d/rules: Update to reflect addition of COPYING.txt
+    to the upstream repository (the license remains the same)
+  * d/apparmor.d: Allow even more device enumeration
+  * Declare compliance with Debian Policy 4.0.0
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 24 Jul 2017 07:40:19 +0100
+
+iortcw (1.51+dfsg1-1) unstable; urgency=medium
+
+  * Reference CVE-2017-6903 in previous changelog entry
+  * Reset git branch to debian/master
+  * New upstream release
+    - drop patches that came from upstream
+  * d/copyright: Fix format declaration
+  * AppArmor: Allow reading OpenAL static data files
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 15 Jun 2017 11:33:12 +0100
+
+iortcw (1.50a+dfsg1-3) unstable; urgency=high
+
+  * d/gbp.conf: switch branch to debian/stretch for updates during freeze
+  * d/patches: Add patches from upstream fixing security vulnerabilities
+    - refuse to load potentially auto-downloadable .pk3 files as
+      iortcw renderers, iortcw game code, libcurl, or OpenAL drivers
+      (mitigation: auto-downloading is off by default, and in Debian
+      we do not dlopen libcurl anyway)
+    - refuse to load default configuration file names from a .pk3 file
+    - protect cl_renderer, cl_curllib, s_aldriver configuration variables so
+      game code cannot set them
+    - refuse to overwrite files other than *.txt with the dump console
+      command
+    - refuse to overwrite files other than *.cfg with the writeconfig
+      console command
+    (Closes: #857714; CVE-2017-6903)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 14 Mar 2017 09:37:19 +0000
+
+iortcw (1.50a+dfsg1-2) unstable; urgency=medium
+
+  * Drop unused libspeexdsp-dev build-dependency
+    (VoIP is now done using the Opus codec)
+  * debian/watch: strip +dfsg1 suffix when comparing versions even if
+    working from a release and not a datestamped snapshot
+  * debian/apparmor.d: allow more forms of device enumeration
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Jan 2017 20:25:48 +0000
+
+iortcw (1.50a+dfsg1-1) unstable; urgency=medium
+
+  * New upstream release 1.5a, represented as 1.50a here to make it
+    sort in the intended order
+    - drop patches that were merged upstream
+    - debian/copyright: update
+  * d/p/Don-t-require-.git-index-to-exist.patch: Fix FTBFS when
+    .git/index doesn't exist
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 20 Nov 2016 22:27:56 +0000
+
+iortcw (1.42d+dfsg1-5) unstable; urgency=medium
+
+  * Fix date(1) syntax when using SOURCE_DATE_EPOCH
+  * Mark patches as applied upstream or Debian-specific, as
+    appropriate
+  * Always do a "release" build. Override OPTIMIZE to empty instead of
+    using upstream's "debug" build for noopt.
+  * Use upstream's copyfiles (install) target instead of reimplementing it
+  * Write generated scripts directly into debian/tmp/usr/games
+  * Add missing dependency on lsb-base, detected by lintian
+  * Sync AppArmor profile with ioquake3
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 05 Nov 2016 22:36:05 +0000
+
+iortcw (1.42d+dfsg1-4) unstable; urgency=medium
+
+  * Normalize packaging via wrap-and-sort -abst
+  * debian/gbp.conf: use DEP-14 branch names debian/master, upstream/latest
+  * Remove rtcw-dbg binary package and rely on automatic dbgsym packages
+  * debian/rules: improve get-orig-source target
+  * Bump debhelper compat level to 10
+    - don't explicitly use dh-systemd, it is now integrated
+    - don't explicitly do a parallel build, it is the default
+  * debian/rules: align with ioquake3's (cosmetic changes only)
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 21 Sep 2016 20:10:00 +0100
+
+iortcw (1.42d+dfsg1-3) unstable; urgency=medium
+
+  * Standards-Version: 3.9.8 (no changes required)
+  * d/rules: remove misleading leftover comment
+  * Upload to unstable
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 17 Jul 2016 20:25:40 +0100
+
+iortcw (1.42d+dfsg1-2) experimental; urgency=medium
+
+  * apparmor: add a child profile for the "safe mode" popups (tested
+    with xmessage and zenity - kdialog will probably need more rules)
+  * apparmor: don't try to run dh_apparmor on non-Linux ports
+  * apparmor: #include the local snippets created by dh_apparmor
+  * Add patch to replace __DATE__ with $SOURCE_DATE_EPOCH if set;
+    that variable is set automatically by recent debhelper
+  * Add Documentation key to the systemd services
+  * Add a patch fixing some spelling mistakes in user-visible messages
+    (but not "persistant", which is unfortunately part of the API)
+  * Enable full compiler hardening
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 21 Mar 2016 09:39:40 +0000
+
+iortcw (1.42d+dfsg1-1) experimental; urgency=medium
+
+  * New upstream release
+    - Please note that this upstream release changes the location of game
+      files from ~/.iortcw to ~/.wolf.
+    - debian/copyright: update
+    - debian/rules: update get-orig-source
+  * debian/scripts/rtcw.in: use ~/.wolf even in non-release snapshots that
+    would normally use ~/.iortcw, for consistency
+  * Add a patch to force the "autoupdate" mechanism to be disabled.
+    This was off by default anyway, but if enabled, it would download and
+    execute arbitrary code from Activision servers without authentication.
+  * Switch Vcs-Git to https (see #810378)
+  * Standards-Version: 3.9.7 (no changes needed)
+  * Add experimental AppArmor profiles to protect the client and server,
+    both in "complain" mode for now
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 08 Mar 2016 08:00:37 +0000
+
+iortcw (1.42b+20151119+dfsg1-1) experimental; urgency=medium
+
+  * New upstream snapshot
+    - build-depend on Freetype which is now enabled by default upstream
+    - enable the new ARMv7 JIT on armhf, forcibly disable it elsewhere
+      (avoiding uname)
+    - debian/copyright: update
+  * debian/rules: maintainer-get-orig-source: put the tarball in
+    ../build-area
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Nov 2015 23:11:58 +0000
+
+iortcw (1.42b+20150930+dfsg1-1) experimental; urgency=low
+
+  * New package for Return to Castle Wolfenstein (Closes: #773742)
+    - game-data-packager (>= 40) can package the required non-free data
+  * Packaging based on ioquake3
+  * Initial Debian changes, similar to ioquake3:
+    - exclude non-Free lcc compiler (licensed for non-commercial use only)
+    - exclude {MP,SP}/media: licensing unclear, and not needed
+      (game-data-packager downloads and repackages an unofficial content patch
+      from iortcw at the same time it downloads the official patch)
+    - exclude Free third-party libraries too, to simplify license compliance,
+      and use system copies of those libraries instead:
+      cURL, Freetype, libjpeg, libogg, OpenAL, libopus, SDL2, libvorbis, zlib
+    - run in a window by default per Games Team policy
+    - disable auto-downloading by default since it is a security risk
+    - reinstate checks for executable file overwriting and remove code to
+      unpack arbitrary native code from (potentially auto-downloaded)
+      game mods, fixing vulnerabilities similar to CVE-2011-3012 but
+      breaking some mods as an unfortunate but unavoidable side-effect
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 05 Oct 2015 00:17:58 +0100

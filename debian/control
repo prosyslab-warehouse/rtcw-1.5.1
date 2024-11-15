@@ -1,0 +1,94 @@
+Source: iortcw
+Section: contrib/games
+Priority: optional
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Uploaders:
+ Simon McVittie <smcv@debian.org>,
+Build-Depends:
+ debhelper-compat (= 12),
+ dh-apparmor [linux-any],
+ dpkg-dev (>= 1.16.1),
+ libcurl4-gnutls-dev (>= 7.60.0),
+ libfreetype6-dev (>= 2.9),
+ libjpeg-dev,
+ libogg-dev (>= 1.3.2),
+ libopenal-dev,
+ libopus-dev (>= 1.2.1),
+ libopusfile-dev (>= 0.9),
+ libsdl2-dev (>= 2.0.9),
+ libvorbis-dev (>= 1.3.6),
+Rules-Requires-Root: no
+Standards-Version: 4.5.1
+Vcs-Git: https://salsa.debian.org/games-team/iortcw.git
+Vcs-Browser: https://salsa.debian.org/games-team/iortcw
+Homepage: https://github.com/iortcw/iortcw/
+
+Package: rtcw
+Architecture: any
+Pre-Depends:
+ ${misc:Pre-Depends},
+Depends:
+ rtcw-common (= ${binary:Version}),
+ ${misc:Depends},
+ ${shlibs:Depends},
+Recommends:
+ x11-utils | zenity | kdialog,
+Breaks:
+ apparmor (<< 2.13.2~),
+Description: game engine for Return to Castle Wolfenstein
+ Return to Castle Wolfenstein is a military- and occult-themed first-person
+ shooter game in a Second World War setting, originally released in 2001.
+ It is a sequel to Wolfenstein 3D, which is also available for Debian
+ (in the wolf4sdl package).
+ .
+ This package contains the iortcw game engines for the single-player campaign
+ and multiplayer, based on ioquake3 and the GPL source releases of RTCW.
+ .
+ For security reasons, this version has been modified to prevent native
+ executable code from being unpacked from game packages (PK3 files).
+ Some game modifications will not work as a result of this change.
+ .
+ Return to Castle Wolfenstein requires non-distributable game data files
+ in the rtcw-data package, prepared using the game-data-packager tool.
+
+Package: rtcw-common
+Architecture: any
+Pre-Depends:
+ ${misc:Pre-Depends},
+Depends:
+ rtcw-data (>= 1.42b+40) | game-data-packager (>= 40),
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: common files for Return to Castle Wolfenstein
+ Return to Castle Wolfenstein is a military- and occult-themed first-person
+ shooter game in a Second World War setting, originally released in 2001.
+ It is a sequel to Wolfenstein 3D, which is also available for Debian
+ (in the wolf4sdl package).
+ .
+ This package contains files shared by the game and the dedicated server.
+ It requires non-distributable game data files from the rtcw-data package,
+ which can be prepared using the game-data-packager tool.
+
+Package: rtcw-server
+Architecture: any
+Pre-Depends:
+ ${misc:Pre-Depends},
+Depends:
+ adduser,
+ lsb-base (>= 3.0-6~),
+ rtcw-common (= ${binary:Version}),
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: standalone server for Return to Castle Wolfenstein
+ Return to Castle Wolfenstein is a military- and occult-themed first-person
+ shooter game in a Second World War setting, originally released in 2001.
+ It is a sequel to Wolfenstein 3D, which is also available for Debian
+ (in the wolf4sdl package).
+ .
+ This package contains the iortcw dedicated server for multiplayer,
+ based on ioquake3 and the GPL source releases of RTCW. It also contains
+ the init script and systemd unit to start the RTCW server, with support
+ for multiple server instances under systemd.
+ .
+ Return to Castle Wolfenstein requires non-distributable game data files
+ from the rtcw-data package, prepared using the game-data-packager tool.

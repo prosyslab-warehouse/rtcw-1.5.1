@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Return to Castle Wolfenstein
+Exec=/usr/games/wolfsp --quiet
+Terminal=false
+Icon=wolfsp
+Type=Application
+Categories=Game;ActionGame;
+Keywords=single player;fps;first person shooter;id;gray matter;
